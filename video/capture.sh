@@ -5,10 +5,10 @@
 
 i=0
 
-while [ $i -le 50 ] ; do
-	NAME=capture-$(printf %02i $i).jpg
+while [ $i -le 100 ] ; do
+	NAME=capture-$(printf %03i $i).jpg
 	echo Capturing $NAME ...
-	import -window gst-launch-1.0 $NAME
+	import -silent -window gst-launch-1.0 $NAME
 	sleep 2
 	i=$(($i+1))
 done

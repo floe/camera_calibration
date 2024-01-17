@@ -8,7 +8,6 @@ from cv2 import aruco
 import yaml
 import numpy as np
 from pathlib import Path
-from tqdm import tqdm
 
 # root directory of repo for relative path specification.
 root = Path(__file__).parent.absolute()
@@ -42,28 +41,32 @@ if calibrate_camera == True:
     calib_fnms = calib_imgs_path.glob('*.jpg')
     print('Using ...', end='')
     for idx, fn in enumerate(calib_fnms):
-        print(idx, '', end='')
         img = cv2.imread( str(root.joinpath(fn) ))
-        img_list.append( img )
+        img_list.append( (img,fn) )
         h, w, c = img.shape
-    print('Calibration images')
+    print(len(img_list),'calibration images')
 
     counter, corners_list, id_list = [], [], []
     first = True
-    for im in tqdm(img_list):
-        img_gray = cv2.cvtColor(im,cv2.COLOR_RGB2GRAY)
+    for im in img_list:
+        img_gray = cv2.cvtColor(im[0],cv2.COLOR_RGB2GRAY)
         corners, ids, rejectedImgPoints = aruco.detectMarkers(img_gray, aruco_dict, parameters=arucoParams)
-        if first == True:
-            corners_list = corners
-            id_list = ids
-            first = False
-        else:
-            corners_list = np.vstack((corners_list, corners))
-            id_list = np.vstack((id_list,ids))
-        counter.append(len(ids))
-    print('Found {} unique markers'.format(np.unique(ids)))
+        if ids is None:
+            ids = []
+        print("Processing: ",im[1])
+        print("Detected:   ",len(corners)," corners, ",len(ids)," IDs, ",len(rejectedImgPoints)," fails")
+        for c in corners:
+            corners_list.append(c[0])
+        for i in ids:
+            id_list.append(ids[0])
+        if len(ids) > 0:
+            counter.append(len(ids))
+            aruco.drawDetectedMarkers(im[0],corners,ids)
+            cv2.imshow("foo",im[0])
+        cv2.waitKey(100)
 
     counter = np.array(counter)
+    id_list = np.array(id_list)
     print ("Calibrating camera .... Please wait...")
     #mat = np.zeros((3,3), float)
     ret, mtx, dist, rvecs, tvecs = aruco.calibrateCameraAruco(corners_list, id_list, counter, board, img_gray.shape, None, None )
