@@ -73,6 +73,13 @@ if calibrate_camera == True:
     with open("calibration.yaml", "w") as f:
         yaml.dump(data, f)
 
+    # end result should look like (cf. https://stackoverflow.com/a/69678079)
+    # DATA="<?xml version=\"1.0\"?><opencv_storage><cameraMatrix type_id=\"opencv-matrix\"><rows>3</rows><cols>3</cols><dt>d</dt><data>2.85762378e+03 0. 1.93922961e+03 0. 2.84566113e+03 1.12195850e+03 0. 0. 1.</data></cameraMatrix><distCoeffs type_id=\"opencv-matrix\"><rows>5</rows><cols>1</cols><dt>d</dt><data>-6.14039421e-01 4.00045455e-01 1.47132971e-03 2.46772077e-04 -1.20407566e-01</data></distCoeffs></opencv_storage>"
+    s = cv2.FileStorage("calibration.xml", cv2.FileStorage_WRITE)
+    s.write("cameraMatrix",mtx)
+    s.write("distCoeffs",cv2.transpose(dist))
+    s.release()
+
 else:
     camera = cv2.VideoCapture(0)
     ret, img = camera.read()
