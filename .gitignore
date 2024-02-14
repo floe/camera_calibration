@@ -1,2 +1,4 @@
 calibration.*
+video/dst-*
 video/tmp-*
+video/output.mp4

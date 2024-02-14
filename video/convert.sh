@@ -10,16 +10,15 @@ for r in $ROTATE ; do
 	for s in $SCALES ; do
 		for g in $GRAVITY ; do
 			NAME=tmp-$g-$s-$r.png
-			[ -e $NAME ] && continue
+			#[ -e $NAME ] && continue
 			convert base.png -background white -mattecolor white -resize $s% -rotate $r -gravity $g -extent 1920x1080 $NAME
-			#convert base.png -background white -mattecolor white -distort Perspective "$DISTORT" -resize $s% -rotate $r -gravity $g -extent 1920x1080 dst-$g-$s-$r.png
+			convert base.png -background white -mattecolor white -distort Perspective "$DISTORT" -resize $s% -rotate $r -gravity $g -extent 1920x1080 dst-$g-$s-$r.png
 		done
 	done
 done
 
 # pipe file list through shuf for randomization
-
-for file in $(shuf -e tmp-*.png) ; do
+for file in $(shuf -e dst-*.png tmp-*.png) ; do
 	echo file $file
 	echo duration 2
 done > tmp-list.txt

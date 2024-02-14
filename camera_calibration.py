@@ -38,7 +38,7 @@ arucoParams = aruco.DetectorParameters_create()
 
 if calibrate_camera == True:
     img_list = []
-    calib_fnms = calib_imgs_path.glob('*.jpg')
+    calib_fnms = calib_imgs_path.glob('*.png')
     print('Using ...', end='')
     for idx, fn in enumerate(calib_fnms):
         img = cv2.imread( str(root.joinpath(fn) ))
@@ -58,7 +58,7 @@ if calibrate_camera == True:
         for c in corners:
             corners_list.append(c[0])
         for i in ids:
-            id_list.append(ids[0])
+            id_list.append(i)
         if len(ids) > 0:
             counter.append(len(ids))
             aruco.drawDetectedMarkers(im[0],corners,ids)
